@@ -1,0 +1,10 @@
+spring:
+  profiles: default 
+
+---
+server:
+  port: 8888
+spring:
+  application:
+    name: route-finder
+
