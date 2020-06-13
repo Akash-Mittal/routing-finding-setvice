@@ -13,7 +13,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.am.bp.alf.innovations.service.application.RoutingApplicationTest;
-import com.am.bp.alf.innovations.service.domain.json.osrm.OSRMRouteResponse;
+import com.am.bp.innovations.domain.json.osrm.OSRMRouteResponse;
+import com.am.bp.innovations.service.OSRMService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = RoutingApplicationTest.class)

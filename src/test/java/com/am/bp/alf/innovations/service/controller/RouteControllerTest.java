@@ -14,16 +14,16 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.am.bp.alf.innovations.service.ComputationService;
-import com.am.bp.alf.innovations.service.OSRMService;
-import com.am.bp.alf.innovations.service.RoutingService;
 import com.am.bp.alf.innovations.service.application.RoutingApplicationTest;
-import com.am.bp.alf.innovations.service.domain.json.api.Destination;
-import com.am.bp.alf.innovations.service.domain.json.api.Origin;
-import com.am.bp.alf.innovations.service.domain.json.api.RouteRequest;
-import com.am.bp.alf.innovations.service.domain.json.api.RouteResponse;
-import com.am.bp.alf.innovations.service.domain.json.api.WayPoint;
-import com.am.bp.alf.innovations.service.domain.json.osrm.OSRMRouteResponse;
+import com.am.bp.innovations.domain.json.api.Destination;
+import com.am.bp.innovations.domain.json.api.Origin;
+import com.am.bp.innovations.domain.json.api.RouteRequest;
+import com.am.bp.innovations.domain.json.api.RouteResponse;
+import com.am.bp.innovations.domain.json.api.WayPoint;
+import com.am.bp.innovations.domain.json.osrm.OSRMRouteResponse;
+import com.am.bp.innovations.service.ComputationService;
+import com.am.bp.innovations.service.OSRMService;
+import com.am.bp.innovations.service.RoutingService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -72,7 +72,7 @@ public class RouteControllerTest {
                         .lon(Double.valueOf("14.489431312606477")).build())
                 .build();
         RouteResponse routeResponse = routingService.getWinner(routeRequest);
-        Assertions.assertThat(routeRequest).isNotNull();
+        Assertions.assertThat(routeResponse).isNotNull();
 
     }
 
