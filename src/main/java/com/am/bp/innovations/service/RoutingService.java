@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import com.am.bp.innovations.domain.Location;
 import com.am.bp.innovations.domain.json.api.RouteRequest;
 import com.am.bp.innovations.domain.json.api.RouteResponse;
 import com.am.bp.innovations.domain.json.osrm.Route;
+import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 
 import lombok.NonNull;
@@ -26,7 +28,13 @@ public class RoutingService implements BaseService.DTO {
     @Autowired
     private OSRMService osrmService;
 
-    public Route getRoute(Location origin, Location waypoint, Location destination)
+    public RouteResponse getWinner(@NonNull RouteRequest routeRequest) {
+        List<Route> routesList = getRoutes(routeRequest);
+        Preconditions.checkArgument(!CollectionUtils.isEmpty(routesList), "Routes Not Found!!");
+        return RouteResponse.builder().build();
+    }
+
+    private Route getRoute(Location origin, Location waypoint, Location destination)
             throws InterruptedException, ExecutionException {
         String cordintaes = origin.getCommaSeperatedVal() + ";" + waypoint.getCommaSeperatedVal() + ";"
                 + destination.getCommaSeperatedVal();
@@ -36,11 +44,7 @@ public class RoutingService implements BaseService.DTO {
         return route;
     }
 
-    public RouteResponse getWinner(@NonNull RouteRequest routeRequest) {
-        return null;
-    }
-
-    public List<Route> getRoutes(@NonNull RouteRequest routeRequest) {
+    private List<Route> getRoutes(@NonNull RouteRequest routeRequest) {
         log.debug("Route Request {}", gson.toJson(routeRequest));
         List<Route> routesList = new ArrayList<>();
         routeRequest.getWayPoints().forEach(wayPoint -> {

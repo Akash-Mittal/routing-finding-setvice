@@ -26,6 +26,7 @@ public interface BaseService {
         int MAX_ALLOWED_IPS = 5;
         String API_OSRM_ROUTE = "http://router.project-osrm.org/route/v1/car/%s?geometries=geojson&overview=full";
         Double AVERAGE_RADIUS_OF_EARTH_KM = Double.valueOf(6371);
+        Double AVERAGE_SPEED_CAR = Double.valueOf(40);
 
     }
 
@@ -49,6 +50,9 @@ public interface BaseService {
         BiFunction<Double, Double, Double> SPEED = (distance, time) -> distance / time;
         BiFunction<Double, Double, Double> DISTANCE = (speed, time) -> speed * time;
         BiFunction<Double, Double, Double> TIME = (distance, speed) -> distance / speed;
+
+        Function<Double, Double> AVERAGE_DISTANCE = (time) -> BaseService.Params.AVERAGE_SPEED_CAR * time;
+        Function<Double, Double> AVERAGE_TIME = (distance) -> distance / BaseService.Params.AVERAGE_SPEED_CAR;
 
         public default Long calculateDistanceInKilometer(@NonNull Location origin, @NonNull Location destination) {
 
