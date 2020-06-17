@@ -1,6 +1,5 @@
 package com.am.bp.innovations.service;
 
-import java.math.BigDecimal;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -11,7 +10,6 @@ import com.am.bp.innovations.domain.Location;
 import com.am.bp.innovations.domain.json.api.Destination;
 import com.am.bp.innovations.domain.json.api.Origin;
 import com.am.bp.innovations.domain.json.api.WayPoint;
-import com.am.bp.innovations.exception.ValidationException;
 
 import lombok.NonNull;
 
@@ -22,8 +20,6 @@ public interface BaseService {
         String V1 = "/v1";
         String BASE_PATH = API + V1;
         String ROUTE = "/route";
-        int MIN_ALLOWED_IPS = 1;
-        int MAX_ALLOWED_IPS = 5;
         String API_OSRM_ROUTE = "http://router.project-osrm.org/route/v1/car/%s?geometries=geojson&overview=full";
         Double AVERAGE_RADIUS_OF_EARTH_KM = Double.valueOf(6371);
         Double AVERAGE_SPEED_CAR = Double.valueOf(40);
@@ -32,17 +28,6 @@ public interface BaseService {
 
     interface Predicates {
         Predicate<Object> CHECK_NOT_NULL_RETURN_TRUE = val -> val != null;
-        Predicate<String[]> CHECK_IF_IPS_IS_GREATER_THAN_0_LESS_THAN_5 = (input) -> {
-            if (CHECK_NOT_NULL_RETURN_TRUE.test(input) && input.length >= Params.MIN_ALLOWED_IPS
-                    && input.length <= Params.MAX_ALLOWED_IPS) {
-                return true;
-            } else {
-                throw new ValidationException(
-                        "Minimumm: " + Params.MIN_ALLOWED_IPS + " Maximumm:" + Params.MAX_ALLOWED_IPS);
-            }
-        };
-        Predicate<BigDecimal> CHECKIFLATITUDEINNORTHERN = (input) -> (CHECK_NOT_NULL_RETURN_TRUE.test(input)
-                && input.compareTo(BigDecimal.ZERO) >= 0 && input.compareTo(BigDecimal.valueOf(90)) <= 0);
         Predicate<String> VALID_IP_ADDRESS = (input) -> InetAddressValidator.getInstance().isValid(input);
     }
 
