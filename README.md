@@ -4,11 +4,9 @@
 
 
 
-### How to Access
-	Local
-	localhost:8888/swagger-ui.html#/
-	Cloud
-	https://route-finder-app.herokuapp.com/swagger-ui.html#/
+* How to Access Locally localhost:8888/swagger-ui.html#/
+* How to Access On Cloud https://route-finder-app.herokuapp.com/swagger-ui.html#/
+	
 
 
 * Service which supports finding a route from Origin to Destination and computing
