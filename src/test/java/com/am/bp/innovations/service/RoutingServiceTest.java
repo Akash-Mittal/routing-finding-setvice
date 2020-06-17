@@ -65,6 +65,7 @@ public class RoutingServiceTest {
                 .destination(
                         Destination.builder().lat(Double.valueOf("47.500077")).lon(Double.valueOf("19.053063")).build())
                 .build();
+        log.info(gson.toJson(routeRequest));
         RouteResponse routeResponse = routingService.getWinner(routeRequest);
         Assertions.assertThat(routeResponse).isNotNull();
 
@@ -96,5 +97,4 @@ public class RoutingServiceTest {
 
         return wayPointList;
     }
-
 }
