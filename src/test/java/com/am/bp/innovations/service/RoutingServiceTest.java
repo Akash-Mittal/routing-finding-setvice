@@ -56,4 +56,45 @@ public class RoutingServiceTest {
         Assertions.assertThat(routeResponse).isNotNull();
     }
 
+    @Test
+    public void testRoutingServiceInBudapest() throws Exception {
+        ArrayList<WayPoint> wayPointList = getBudapestWayPoints();
+        RouteRequest routeRequest = RouteRequest.builder()
+                .origin(Origin.builder().lat(Double.valueOf("47.499649")).lon(Double.valueOf("19.047972")).build())
+                .wayPoints(wayPointList)
+                .destination(
+                        Destination.builder().lat(Double.valueOf("47.500077")).lon(Double.valueOf("19.053063")).build())
+                .build();
+        RouteResponse routeResponse = routingService.getWinner(routeRequest);
+        Assertions.assertThat(routeResponse).isNotNull();
+
+    }
+
+    /*
+     * Origin | Four Seasons Hotel |Budapest, Széchenyi István tér 5-6, 1051 | 47.499649, 19.047972
+     * 
+     * https://getlatlong.net/
+     * 
+     * Way Point 1 Raiffeisen Bank Headquarters | Budapest, Akadémia u. 6, 1054 | 47.502029,19.046440
+     * 
+     * Way Point 2 Las Vegas Casino |Address: Budapest, Széchenyi István tér 2, 1051 | 47.499544,19.047272
+     * 
+     * Way Point 3 Budapest Eye | | 47.498169, 19.052052
+     * 
+     * Destination St. Stephen's Basilica, Budapest, Szent István tér 1, 1051 | 47.500077, 19.053063
+     * 
+     */
+
+    public ArrayList<WayPoint> getBudapestWayPoints() {
+        ArrayList<WayPoint> wayPointList = new ArrayList<>();
+        // Raiffeisen Bank Headquarters
+        wayPointList.add(WayPoint.builder().lat(Double.valueOf("47.502029")).lon(Double.valueOf("19.046440")).build());
+        // Las Vegas Casino
+        wayPointList.add(WayPoint.builder().lat(Double.valueOf("47.499544")).lon(Double.valueOf("19.047272")).build());
+        // Budapest Eye
+        wayPointList.add(WayPoint.builder().lat(Double.valueOf("47.498169")).lon(Double.valueOf("19.052052")).build());
+
+        return wayPointList;
+    }
+
 }
