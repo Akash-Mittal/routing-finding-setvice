@@ -2,6 +2,7 @@ package com.am.bp.innovations.service;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @ContextConfiguration(classes = { RoutingApplicationTest.class, OSRMService.class, RoutingService.class, })
 @SpringBootTest
 @Slf4j
+@Ignore
 public class OSRMServiceTest {
 
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();

@@ -51,6 +51,7 @@ public interface BaseService {
         };
 
         public default RouteResponse sortAndGetFirst(@NonNull List<RouteWithWayPointName> routesList) {
+            // Validate size
             Collections.sort(routesList, sortRouteByDuration);
             return RouteResponse.builder().winnerName(routesList.get(0).getWayPointName()).build();
         }
@@ -64,8 +65,10 @@ public interface BaseService {
                     Route route = getRoute(ORIGIN_LOCATION.apply(routeRequest.getOrigin()),
                             WAYPOINT_LOCATION.apply(wayPoint),
                             DESTINATION_LOCATION.apply(routeRequest.getDestination()), gson, osrmService);
-                    routesList
-                            .add(RouteWithWayPointName.builder().route(route).wayPointName(wayPoint.getName()).build());
+                    if (route != null) {
+                        routesList.add(
+                                RouteWithWayPointName.builder().route(route).wayPointName(wayPoint.getName()).build());
+                    }
                 } catch (InterruptedException | ExecutionException e) {
                     log.error(e.getMessage());
                     // Throw Business Exception
