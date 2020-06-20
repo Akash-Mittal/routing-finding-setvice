@@ -25,7 +25,8 @@ public class RoutingService implements BaseService.Routing {
 
     public RouteResponse getWinner(@NonNull RouteRequest routeRequest) {
         List<RouteWithWayPointName> routesList = getRoutes(routeRequest, gson, osrmService);
-        return sortAndGetFirst(routesList);
+        RouteResponse routeResponse = sortAndGetFirst(routesList);
+        return routeResponse;
     }
 
 }

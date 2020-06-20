@@ -1,40 +1,17 @@
 
 package com.am.bp.innovations.domain.json.api;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.am.bp.innovations.domain.BaseResponse;
 
-import lombok.Builder;
+import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "winnerName", "delays" })
-@Builder
+@SuperBuilder
+@Data
 public class RouteResponse {
 
-    @JsonProperty("winnerName")
     private String winnerName;
-    @JsonProperty("delays")
     private Delays delays;
-
-    @JsonProperty("winnerName")
-    public String getWinnerName() {
-        return winnerName;
-    }
-
-    @JsonProperty("winnerName")
-    public void setWinnerName(String winnerName) {
-        this.winnerName = winnerName;
-    }
-
-    @JsonProperty("delays")
-    public Delays getDelays() {
-        return delays;
-    }
-
-    @JsonProperty("delays")
-    public void setDelays(Delays delays) {
-        this.delays = delays;
-    }
+    private BaseResponse baseResponse;
 
 }
