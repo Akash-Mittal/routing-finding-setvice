@@ -1,3 +1,15 @@
+[![Build Status](https://travis-ci.org/Akash-Mittal/routing-finding-setvice.svg?branch=master)](https://travis-ci.org/Akash-Mittal/routing-finding-setvice)
+
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Akash-Mittal_routing-finding-setvice&metric=alert_status)](https://sonarcloud.io/dashboard?id=Akash-Mittal_routing-finding-setvice)
+
+[![GitHub issues](https://img.shields.io/github/issues/Akash-Mittal/routing-finding-setvice.svg)](https://github.com/Akash-Mittal/routing-finding-setvice/issues)
+
+[![GitHub forks](https://img.shields.io/github/forks/Akash-Mittal/routing-finding-setvice.svg)](https://github.com/Akash-Mittal/routing-finding-setvice/network)
+
+[![GitHub license](https://img.shields.io/github/license/Akash-Mittal/routing-finding-setvice.svg)](https://github.com/Akash-Mittal/routing-finding-setvice/blob/master/LICENSE)
+
+[![GitHub stars](https://img.shields.io/github/stars/Akash-Mittal/routing-finding-setvice.svg)](https://github.com/Akash-Mittal/routing-finding-setvice/stargazers)
+
 
 
 ### Route Finder API Overview
