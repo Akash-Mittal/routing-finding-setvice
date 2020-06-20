@@ -1,15 +1,25 @@
 package com.am.bp.innovations.service;
 
-import java.util.function.BiFunction;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
-import org.apache.commons.validator.routines.InetAddressValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.am.bp.innovations.domain.Location;
+import com.am.bp.innovations.domain.RouteWithWayPointName;
 import com.am.bp.innovations.domain.json.api.Destination;
 import com.am.bp.innovations.domain.json.api.Origin;
+import com.am.bp.innovations.domain.json.api.RouteRequest;
+import com.am.bp.innovations.domain.json.api.RouteResponse;
 import com.am.bp.innovations.domain.json.api.WayPoint;
+import com.am.bp.innovations.domain.json.osrm.Route;
+import com.google.gson.Gson;
 
 import lombok.NonNull;
 
@@ -21,45 +31,68 @@ public interface BaseService {
         String BASE_PATH = API + V1;
         String ROUTE = "/route";
         String API_OSRM_ROUTE = "http://router.project-osrm.org/route/v1/car/%s?geometries=geojson&overview=full";
-        Double AVERAGE_RADIUS_OF_EARTH_KM = Double.valueOf(6371);
-        Double AVERAGE_SPEED_CAR = Double.valueOf(40);
 
     }
 
-    interface Predicates {
-        Predicate<Object> CHECK_NOT_NULL_RETURN_TRUE = val -> val != null;
-        Predicate<String> VALID_IP_ADDRESS = (input) -> InetAddressValidator.getInstance().isValid(input);
-    }
+    interface Routing {
+        Logger log = LoggerFactory.getLogger(Routing.class);
 
-    interface Functions {
-        BiFunction<Double, Double, Double> SPEED = (distance, time) -> distance / time;
-        BiFunction<Double, Double, Double> DISTANCE = (speed, time) -> speed * time;
-        BiFunction<Double, Double, Double> TIME = (distance, speed) -> distance / speed;
+        Function<Origin, Location> ORIGIN_LOCATION = (origin) -> {
+            Objects.nonNull(origin);
+            return Location.builder().latitude(origin.getLat()).longitude(origin.getLon()).build();
+        };
+        Function<WayPoint, Location> WAYPOINT_LOCATION = (wayPoint) -> {
+            Objects.nonNull(wayPoint);
+            return Location.builder().latitude(wayPoint.getLat()).longitude(wayPoint.getLon()).build();
+        };
+        Function<Destination, Location> DESTINATION_LOCATION = (destination) -> {
+            Objects.nonNull(destination);
+            return Location.builder().latitude(destination.getLat()).longitude(destination.getLon()).build();
+        };
 
-        Function<Double, Double> AVERAGE_DISTANCE = (time) -> BaseService.Params.AVERAGE_SPEED_CAR * time;
-        Function<Double, Double> AVERAGE_TIME = (distance) -> distance / BaseService.Params.AVERAGE_SPEED_CAR;
-
-        public default Long calculateDistanceInKilometer(@NonNull Location origin, @NonNull Location destination) {
-
-            Double latDistance = Math.toRadians(origin.getLatitude() - destination.getLatitude());
-            Double lngDistance = Math.toRadians(origin.getLongitude() - destination.getLongitude());
-            Double firstEquation = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                    + Math.cos(Math.toRadians(origin.getLatitude()))
-                            * Math.cos(Math.toRadians(destination.getLatitude())) * Math.sin(lngDistance / 2)
-                            * Math.sin(lngDistance / 2);
-            Double secondEquation = 2 * Math.atan2(Math.sqrt(firstEquation), Math.sqrt(1 - firstEquation));
-            return Long.valueOf(((Math.round(Params.AVERAGE_RADIUS_OF_EARTH_KM * secondEquation))));
+        public default RouteResponse sortAndGetFirst(@NonNull List<RouteWithWayPointName> routesList) {
+            Collections.sort(routesList, sortRouteByDuration);
+            return RouteResponse.builder().winnerName(routesList.get(0).getWayPointName()).build();
         }
 
-    }
+        public default List<RouteWithWayPointName> getRoutes(@NonNull RouteRequest routeRequest, @NonNull Gson gson,
+                @NonNull OSRMService osrmService) {
+            log.debug("Route Request {}", gson.toJson(routeRequest));
+            List<RouteWithWayPointName> routesList = new ArrayList<>();
+            routeRequest.getWayPoints().forEach(wayPoint -> {
+                try {
+                    Route route = getRoute(ORIGIN_LOCATION.apply(routeRequest.getOrigin()),
+                            WAYPOINT_LOCATION.apply(wayPoint),
+                            DESTINATION_LOCATION.apply(routeRequest.getDestination()), gson, osrmService);
+                    routesList
+                            .add(RouteWithWayPointName.builder().route(route).wayPointName(wayPoint.getName()).build());
+                } catch (InterruptedException | ExecutionException e) {
+                    log.error(e.getMessage());
+                    // Throw Business Exception
+                }
+            });
 
-    interface DTO {
-        Function<Origin, Location> ORIGIN_LOCATION = (Origin) -> Location.builder().latitude(Origin.getLat())
-                .longitude(Origin.getLon()).build();
-        Function<WayPoint, Location> WAYPOINT_LOCATION = (wayPoint) -> Location.builder().latitude(wayPoint.getLat())
-                .longitude(wayPoint.getLon()).build();
-        Function<Destination, Location> DESTINATION_LOCATION = (destination) -> Location.builder()
-                .latitude(destination.getLat()).longitude(destination.getLon()).build();
+            return routesList;
+        }
+
+        public default Route getRoute(@NonNull Location origin, @NonNull Location waypoint,
+                @NonNull Location destination, @NonNull Gson gson, @NonNull OSRMService osrmService)
+                throws InterruptedException, ExecutionException {
+            String coordinates = origin.getCommaSeperatedVal() + ";" + waypoint.getCommaSeperatedVal() + ";"
+                    + destination.getCommaSeperatedVal();
+            log.info("Calling OSRM for origin {}  waypoint {} destination {}", origin, waypoint, destination);
+            Route route = osrmService.callRoutesAPI(coordinates).get().getRoutes().get(0);
+            log.info("Response Recieved {}", gson.toJson(route));
+            return route;
+        }
+
+        Comparator<RouteWithWayPointName> sortRouteByDuration = (RouteWithWayPointName you,
+                RouteWithWayPointName me) -> {
+            Objects.nonNull(you);
+            Objects.nonNull(me);
+            return you.getRoute().getDuration().compareTo(me.getRoute().getDuration());
+        };
+
     }
 
 }

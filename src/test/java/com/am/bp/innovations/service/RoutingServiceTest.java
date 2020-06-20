@@ -54,6 +54,7 @@ public class RoutingServiceTest {
                 .build();
         RouteResponse routeResponse = routingService.getWinner(routeRequest);
         Assertions.assertThat(routeResponse).isNotNull();
+        // Rest of Validations
     }
 
     @Test
@@ -68,6 +69,7 @@ public class RoutingServiceTest {
         log.info(gson.toJson(routeRequest));
         RouteResponse routeResponse = routingService.getWinner(routeRequest);
         Assertions.assertThat(routeResponse).isNotNull();
+        // Rest of Validations
 
     }
 
@@ -94,7 +96,6 @@ public class RoutingServiceTest {
         wayPointList.add(WayPoint.builder().lat(Double.valueOf("47.499544")).lon(Double.valueOf("19.047272")).build());
         // Budapest Eye
         wayPointList.add(WayPoint.builder().lat(Double.valueOf("47.498169")).lon(Double.valueOf("19.052052")).build());
-
         return wayPointList;
     }
 }
